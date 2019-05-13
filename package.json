@@ -1,0 +1,13 @@
+{
+  "name": "norp-bot",
+  "version": "0.0.0",
+  "description": "NorpBot",
+  "main": "app.js",
+  "author": {
+    "name": ""
+  },
+  "dependencies": {
+    "discord.js": "^11.4.2",
+    "dotenv": "^7.0.0"
+  }
+}
