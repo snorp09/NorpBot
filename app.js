@@ -11,7 +11,6 @@ client.on('message', msg => {
     if (msg.content === "!NE" && msg.author.username === "Snorp09") {
         console.log(process.env.TEST)
     }
-    msg.guild.members.get("559819265872756749").setNickname("NorpBot")
 })
 
 client.login(process.env.BOT_TOKEN)
