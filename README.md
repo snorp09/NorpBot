@@ -5,9 +5,10 @@ I plan to add eventually more features, like modding capabilities. But I don't h
 # Installing and running
 You'll need a discord bot already created and added to a server.
 
-Clone the project anywhere.
-change into the directory and run ```npm install```
-Then you'll need to create a .env file. And add
+Clone the project anywhere
+
+Change into the directory and run ```npm install```
+Then you'll need to create a .env file. And add:
 ```
 BOT_TOKEN="Your Token Here"
 ```
