@@ -5,11 +5,11 @@ const client = new Discord.Client;
 const Guild = new Discord.Guild;
 
 client.on('message', msg => {
-    if (msg.content === "!norp") {
+    if (msg.content === "!norp" || msg.content === "!Norp") {
         msg.reply(" Norp.")
     }
-    if (msg.content === "!NE" && msg.author.username === "Snorp09") {
-        console.log(process.env.TEST)
+    if (msg.content ==="!source" || msg.content === "!Source" ){
+        msg.author.send("A link to the Norpbot source code: http://www.github.com/snorp09/NorpBot")
     }
 })
 
