@@ -21,6 +21,18 @@ client.on('message', msg => {
         console.log("Caught Error: " + error);
         msg.reply("Error while running '!offline' command. Are you in DMs?");
     }
+    if(msg.content === "!vcNorp"){
+        let channel = msg.member.voiceChannel.join();
+        const broadcast = client.createVoiceBroadcast();
+        broadcast.playFile("VCAudio/Norp.mp3");
+        for (const connect of client.voiceConnections.values()) {
+            connect.playBroadcast(broadcast)
+        }
+    }
+    if(msg.content === "!vcremove"){
+        msg.member.voiceChannel.leave()
+        console.log("Tried leaving")
+    }
 });
 
 client.login(process.env.BOT_TOKEN);
