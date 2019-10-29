@@ -2,7 +2,7 @@
 const env = require('dotenv').config();
 const Discord = require("discord.js");
 const client = new Discord.Client;
-const Guild = new Discord.Guild;
+//const Guild = new Discord.Guild;
 
 client.on('message', msg => {
     if (msg.content === "!norp" || msg.content === "!Norp") {
@@ -13,7 +13,9 @@ client.on('message', msg => {
     }
     try{
         if(msg.content === "!offline" && msg.member.hasPermission("administrator")){
-            client.destroy();
+            client.destroy().then( function () {
+                console.log("Client Destroyed.");
+            });
         }
     }
     //Catches all error regarding permissions. TODO Add different messages for each type of errors
@@ -21,18 +23,8 @@ client.on('message', msg => {
         console.log("Caught Error: " + error);
         msg.reply("Error while running '!offline' command. Are you in DMs?");
     }
-    if(msg.content === "!vcNorp"){
-        let channel = msg.member.voiceChannel.join();
-        const broadcast = client.createVoiceBroadcast();
-        broadcast.playFile("VCAudio/Norp.mp3");
-        for (const connect of client.voiceConnections.values()) {
-            connect.playBroadcast(broadcast)
-        }
-    }
-    if(msg.content === "!vcremove"){
-        msg.member.voiceChannel.leave()
-        console.log("Tried leaving")
-    }
 });
 
-client.login(process.env.BOT_TOKEN);
+client.login(process.env.BOT_TOKEN).then(function () {
+    console.log("Login Complete.")
+});
