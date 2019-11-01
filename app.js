@@ -23,13 +23,22 @@ client.on('message', msg => {
             console.log(norpReady)
         }
     }
+
+    if(msg.content === "!help" || msg.content === "!Help"){
+        msg.channel.send("This bot responds to the follow commands.");
+        msg.channel.send("!Norp: Responds to user with the message \"Norp\" ");
+        msg.channel.send("!Source: Bot will delete message with command, and DM requesting user a link to the bot's source code.");
+        msg.channel.send("!Offline: If command is sent by an admin, bot with shutdown. Otherwise, it'll respond with an error.");
+    }
+
+    //!Source will send a link to the Norpbot source code to whoever sends the command.
     if (msg.content ==="!source" || msg.content === "!Source" ){
         msg.author.send("A link to the Norpbot source code: http://www.github.com/snorp09/NorpBot")
     }
 
     //!Offline preforms a clean shutdown of the bot. Requires Administrator permissions.
     try{
-        if(msg.content === "!offline" && msg.member.hasPermission("administrator")){
+        if(msg.content === "!offline" || msg.content === "!Offline" && msg.member.hasPermission("administrator")){
             client.destroy().then( function () {
                 console.log("Client Destroyed.");
             });
