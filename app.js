@@ -5,6 +5,7 @@ const client = new Discord.Client;
 //const Guild = new Discord.Guild;
 
 let norpReady = true;
+let helpReady = true;
 
 client.on('message', msg => {
 
@@ -20,17 +21,26 @@ client.on('message', msg => {
         }
         else{
             console.log("Norp not ready.");
-            console.log(norpReady)
         }
     }
 
     //!Help explains bot's usage
     if(msg.content === "!help" || msg.content === "!Help"){
-        msg.channel.send("This bot responds to the follow commands.");
-        msg.channel.send("!Norp: Responds to user with the message \"Norp\" ");
-        msg.channel.send("This help message.");
-        msg.channel.send("!Source: Bot will delete message with command, and DM requesting user a link to the bot's source code.");
-        msg.channel.send("!Offline: If command is sent by an admin, bot with shutdown. Otherwise, it'll respond with an error.");
+        if(helpReady){
+            msg.channel.send("This bot responds to the follow commands.");
+            msg.channel.send("!Norp: Responds to user with the message \"Norp\" ");
+            msg.channel.send("This help message.");
+            msg.channel.send("!Source: Bot will delete message with command, and DM requesting user a link to the bot's source code.");
+            msg.channel.send("!Offline: If command is sent by an admin, bot with shutdown. Otherwise, it'll respond with an error.");
+            helpReady = false;
+            setTimeout(function () {
+                console.log("Wait done. Enabling Help.");
+                helpReady = true
+            }, 60000)
+        }
+        else {
+            console.log("Help not ready.");
+        }
     }
 
     //!Source will send a link to the Norpbot source code to whoever sends the command.
