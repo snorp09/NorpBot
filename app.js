@@ -24,9 +24,11 @@ client.on('message', msg => {
         }
     }
 
+    //!Help explains bot's usage
     if(msg.content === "!help" || msg.content === "!Help"){
         msg.channel.send("This bot responds to the follow commands.");
         msg.channel.send("!Norp: Responds to user with the message \"Norp\" ");
+        msg.channel.send("This help message.");
         msg.channel.send("!Source: Bot will delete message with command, and DM requesting user a link to the bot's source code.");
         msg.channel.send("!Offline: If command is sent by an admin, bot with shutdown. Otherwise, it'll respond with an error.");
     }
