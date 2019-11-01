@@ -35,7 +35,7 @@ client.on('message', msg => {
             });
         }
     }
-    //Catches all error regarding permissions.
+    //Catches errors from !offline. Most common types are handled, and the bot will reply with recommend trouble shooting.
     catch (error) {
         console.log("Caught Error: " + error);
         if(error instanceof RangeError){
