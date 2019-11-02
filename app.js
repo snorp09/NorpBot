@@ -50,7 +50,7 @@ client.on('message', msg => {
 
     //!Offline preforms a clean shutdown of the bot. Requires Administrator permissions.
     try{
-        if(msg.content === "!offline" || msg.content === "!Offline" && msg.member.hasPermission("administrator")){
+        if(msg.content === "!offline" && msg.member.hasPermission("ADMINISTRATOR") || msg.content === "!Offline" && msg.member.hasPermission("ADMINISTRATOR")){
             client.destroy().then( function () {
                 console.log("Client Destroyed.");
             });
