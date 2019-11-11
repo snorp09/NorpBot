@@ -4,10 +4,14 @@ const Discord = require("discord.js");
 const client = new Discord.Client;
 //const Guild = new Discord.Guild;
 
+//Set the norpReady to true on power on.
 let norpReady = true;
-let helpReady = true;
 
 client.on('message', msg => {
+
+    if(msg.author.bot){
+        return;
+    }
 
     //The core of the bot. The Norp command, with timeout for spam control.
     if (msg.content === "!norp" || msg.content === "!Norp") {
@@ -24,23 +28,10 @@ client.on('message', msg => {
         }
     }
 
-    //!Help explains bot's usage
+    //!Help links to my Github Wiki Page on Norpbot Commands.
+    //IF YOU MODIFY THE PROGRAM, CHANGE THIS TO YOUR LINK ON COMMANDS.
     if(msg.content === "!help" || msg.content === "!Help"){
-        if(helpReady){
-            msg.channel.send("This bot responds to the follow commands.");
-            msg.channel.send("!Norp: Responds to user with the message \"Norp\" ");
-            msg.channel.send("This help message.");
-            msg.channel.send("!Source: Bot will delete message with command, and DM requesting user a link to the bot's source code.");
-            msg.channel.send("!Offline: If command is sent by an admin, bot with shutdown. Otherwise, it'll respond with an error.");
-            helpReady = false;
-            setTimeout(function () {
-                console.log("Wait done. Enabling Help.");
-                helpReady = true
-            }, 60000)
-        }
-        else {
-            console.log("Help not ready.");
-        }
+        msg.author.send("You can see the commands on the follow page. https://github.com/snorp09/NorpBot/wiki/Bot-Commands")
     }
 
     //!Source will send a link to the Norpbot source code to whoever sends the command.
@@ -59,17 +50,37 @@ client.on('message', msg => {
     //Catches errors from !offline. Most common types are handled, and the bot will reply with recommend trouble shooting.
     catch (error) {
         console.log("Caught Error: " + error);
-        if(error instanceof RangeError){
+        if(error instanceof RangeError){    //Error handling message for permissions.
             msg.reply("An error has occurred. This type is usually cased by wrong permissions. Are you admin? ")
         }
-        else if(error instanceof TypeError){
+        else if(error instanceof TypeError){ //Permissions don't exist in DMs, so it'll have null type which isn't expected.
             msg.channel.send("An error has occurred. This type is usually caused by trying to set the bot offline in DMs. Try outside of DMs.")
         }
-        else{
+        else{   //Catches other errors. Links to Norpbot issue page to report the error.
             msg.reply("An unknown type of error has occurred. Please check your node.js console for details, and possibly make an issue request at https://github.com/snorp09/NorpBot/issues");
             msg.channel.send("They'll want have a copy of the error you've received in your node.js console, if you opt to make a issue.")
         }
     }
+
+
+    //Code for the !Roll Command.
+    if(msg.content.includes("!Roll") || msg.content.includes("!roll") && !msg.content.includes(" !Roll") && !msg.content.includes(" !roll")){
+        let rollnumb = msg.content.split(" ")[1];
+        if(typeof rollnumb == 'undefined'){
+            msg.reply("!roll requires a size of dice.");
+            return;
+        }
+        if(isNaN(rollnumb)){
+            msg.reply("!roll requires a size of dice.");
+            return;
+        }
+        let numb = Math.floor(Math.random() * rollnumb + 1);
+        if(numb === 0){
+            numb = 1;
+        }
+        msg.reply("You rolled a " + numb);
+    }
+
 });
 
 client.login(process.env.BOT_TOKEN).then(function () {
