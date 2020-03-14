@@ -7,7 +7,7 @@ const client = new Discord.Client;
 //Set the norpReady to true on power on.
 let norpReady = true;
 
-client.on('message', msg => {
+client.on('message', async msg => {
 
     if(msg.author.bot){
         return;
@@ -79,6 +79,23 @@ client.on('message', msg => {
             numb = 1;
         }
         msg.reply("You rolled a " + numb);
+    }
+
+
+    if(msg.content === "!VCNorp"){
+        if(!msg.guild) return;
+
+        if(msg.member.voiceChannel){
+            console.log("VCNorping.");
+            const channel = await msg.member.voiceChannel.join();
+            const play = channel.playFile("./VCAudio/Norp.mp3");
+            play.on('end', () =>{
+                channel.channel.leave();
+            })
+        }
+        else{
+            msg.reply("You must be in a voice channel to be Norped.");
+        }
     }
 
 });
