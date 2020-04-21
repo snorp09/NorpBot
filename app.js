@@ -4,17 +4,24 @@ const Discord = require("discord.js");
 const client = new Discord.Client;
 //const Guild = new Discord.Guild;
 
-//Set the norpReady to true on power on.
-let norpReady = true;
+//Here we set our abuse timers initial values.
+var norpReady = true;
+var rollReady = true;
 
-client.on('message', async msg => {
+client.on('message', msg => {
+    //Case insensitive command parser 
+    function commandparse(command) {
+        if(msg.content.toLocaleLowerCase().includes(command) && !msg.content.toLocaleLowerCase().includes(" " + command)){
+            return true;
+        }
+    }
 
     if(msg.author.bot){
         return;
     }
 
     //The core of the bot. The Norp command, with timeout for spam control.
-    if (msg.content === "!norp" || msg.content === "!Norp") {
+    if (commandparse("!norp")) {
         if(norpReady === true){
             msg.reply("Norp.");
             norpReady = false;
@@ -30,18 +37,18 @@ client.on('message', async msg => {
 
     //!Help links to my Github Wiki Page on Norpbot Commands.
     //IF YOU MODIFY THE PROGRAM, CHANGE THIS TO YOUR LINK ON COMMANDS.
-    if(msg.content === "!help" || msg.content === "!Help"){
+    if(commandparse("!help")){
         msg.author.send("You can see the commands on the follow page. https://github.com/snorp09/NorpBot/wiki/Bot-Commands")
     }
 
     //!Source will send a link to the Norpbot source code to whoever sends the command.
-    if (msg.content ==="!source" || msg.content === "!Source" ){
+    if (commandparse("!source")){
         msg.author.send("A link to the Norpbot source code: http://www.github.com/snorp09/NorpBot")
     }
 
     //!Offline preforms a clean shutdown of the bot. Requires Administrator permissions.
     try{
-        if(msg.content === "!offline" && msg.member.hasPermission("ADMINISTRATOR") || msg.content === "!Offline" && msg.member.hasPermission("ADMINISTRATOR")){
+        if(commandparse("!offline") && msg.member.hasPermission("ADMINISTRATOR")){
             client.destroy().then( function () {
                 console.log("Client Destroyed.");
             });
@@ -62,34 +69,76 @@ client.on('message', async msg => {
         }
     }
 
-
-    //Code for the !Roll Command.
-    if(msg.content.includes("!Roll") || msg.content.includes("!roll") && !msg.content.includes(" !Roll") && !msg.content.includes(" !roll")){
-        let rollnumb = msg.content.split(" ")[1];
-        if(typeof rollnumb == 'undefined'){
-            msg.reply("!roll requires a size of dice.");
-            return;
-        }
-        if(isNaN(rollnumb)){
-            msg.reply("!roll requires a size of dice.");
-            return;
-        }
-        let numb = Math.floor(Math.random() * rollnumb + 1);
+    function rollDice(size) {
+        let numb = Math.floor(Math.random() * size + 1);
         if(numb === 0){
             numb = 1;
         }
-        msg.reply("You rolled a " + numb);
+        return numb
+
     }
 
+
+    //Code for the !Roll Command.
+    if(rollReady === true) {
+        if (commandparse("!roll")) {
+            //Let's declare our values.
+            let diceSize = parseInt(msg.content.split(' ')[1])
+            let rollnumb = parseInt(msg.content.split(' ')[2])
+
+            if (typeof diceSize == 'undefined') {
+                msg.reply("!roll requires a size of dice.");
+                return;
+            }
+            if (isNaN(diceSize)) {
+                msg.reply("!roll requires a size of dice.");
+                return;
+            }
+            //Sets max size for dice, to prevent insanely high numbers
+            if (diceSize > 100000) {
+                msg.reply("Max size of dice is 100,000");
+                return;
+            }
+
+            if (typeof rollnumb == 'number' && !isNaN(rollnumb)) {
+
+                //Max number of dice rollable. Too high can hit Discord's API Limit. Will result in a bot crash. Also can cause massive spam.
+                if (rollnumb > 20) {
+                    msg.reply("Max roll count is 20.");
+                    return;
+                }
+
+                let results = ""
+                //Time to roll.
+                for (let roll = 0; rollnumb > roll; roll++) {
+                    //If final roll, don't add a comma
+                    if (roll === rollnumb - 1) {
+                        results = results + rollDice(diceSize);
+                    } else {
+                        results = results + rollDice(diceSize) + ", ";
+                    }
+                }
+                msg.reply("You rolled: " + results)
+            }else {
+                rollDice(diceSize)
+                msg.reply("You rolled " + rollDice(diceSize));
+            }
+            rollReady = false;
+            //Abuse prevention timer.
+            setTimeout(() =>{
+                rollReady = true;
+            }, 5000)
+        }
+    }
 //The code for the VCNorp command
-    if(msg.content === "!VCNorp"){
+    if(commandparse("!vcnorp")){
         //Are you in a server?
         if(!msg.guild) return;
         
         //Are you actually in a Voice Channel?
         if(msg.member.voiceChannel){
             console.log("VCNorping.");
-            const channel = await msg.member.voiceChannel.join();
+            const channel = msg.member.voiceChannel.join();
             const play = channel.playFile("./VCAudio/Norp.mp3");
             //Leave after playing file.
             play.on('end', () =>{
